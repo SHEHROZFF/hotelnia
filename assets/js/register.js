@@ -1,0 +1,113 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const registerForm = document.getElementById('registerForm');
+    const messageContainer = document.getElementById('message');
+    
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Clear previous messages
+            messageContainer.innerHTML = '';
+            messageContainer.className = '';
+            
+            // Clear previous error messages
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
+            
+            // Show loading message
+            messageContainer.className = 'alert alert-info';
+            messageContainer.textContent = 'Processing...';
+            messageContainer.style.display = 'block'; // Ensure message is visible
+            
+            // Collect form data
+            const formData = new FormData(registerForm);
+            
+            // Send AJAX request
+            fetch('ajax/process_register.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                // First check if the response is ok (status in the range 200-299)
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status} ${response.statusText}`);
+                }
+                
+                // Check if the response is empty
+                if (!response.headers.get('content-length') || response.headers.get('content-length') === '0') {
+                    throw new Error('Server returned an empty response');
+                }
+                
+                // Get the text response first
+                return response.text().then(text => {
+                    try {
+                        // Try to parse the text as JSON
+                        const data = JSON.parse(text);
+                        return data;
+                    } catch (e) {
+                        // If parsing fails, log the error and the actual response
+                        console.error('JSON parse error:', e);
+                        console.log('Actual response text:', text);
+                        throw new Error('Invalid server response: ' + e.message);
+                    }
+                });
+            })
+            .then(data => {
+                // Process the response data
+                if (data.success) {
+                    // Registration successful
+                    messageContainer.className = 'alert alert-success';
+                    messageContainer.style.display = 'block'; // Ensure message is visible
+                    
+                    // Check if verification is required
+                    if (data.verification_required) {
+                        messageContainer.textContent = data.message || 'Registration successful! Please check your email to verify your account.';
+                    } else {
+                        messageContainer.textContent = data.message || 'Registration successful!';
+                    }
+                    
+                    // Clear the form
+                    registerForm.reset();
+                    
+                    // Redirect if specified
+                    if (data.redirect) {
+                        setTimeout(function() {
+                            window.location.href = data.redirect;
+                        }, 2000);
+                    }
+                } else {
+                    // Registration failed
+                    messageContainer.className = 'alert alert-danger';
+                    messageContainer.style.display = 'block'; // Ensure message is visible
+                    
+                    if (data.errors) {
+                        // Display field-specific errors
+                        Object.keys(data.errors).forEach(field => {
+                            const inputField = document.querySelector(`[name="${field}"]`);
+                            if (inputField) {
+                                // Mark field as invalid
+                                inputField.classList.add('is-invalid');
+                                
+                                // Add error message
+                                const errorDiv = document.createElement('div');
+                                errorDiv.className = 'invalid-feedback error-message';
+                                errorDiv.textContent = data.errors[field];
+                                inputField.parentNode.appendChild(errorDiv);
+                            }
+                        });
+                        
+                        messageContainer.textContent = 'Please correct the errors in the form.';
+                    } else {
+                        // Display general error message
+                        messageContainer.textContent = data.message || 'Registration failed. Please try again.';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                messageContainer.className = 'alert alert-danger';
+                messageContainer.textContent = 'An error occurred: ' + error.message;
+                messageContainer.style.display = 'block'; // Ensure message is visible
+            });
+        });
+    }
+}); 

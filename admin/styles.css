@@ -1,0 +1,205 @@
+:root {
+  --primary-color: #029bfe;
+  --secondary-color: #fe9900;
+  --background-color: #f2f2f2;
+  --text-color: #555;
+  --heading-color: #212121;
+  --heading-font-family: "Montserrat";
+  --text-font-family: "Open Sans";
+  ----white-bg: #fff;
+  ------price-color: #dc3545;
+  --text-light-cl: #999999;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  padding: 0;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+nav#sidebar {
+  padding: 10px 30px;
+}
+nav#sidebar .nav-link {
+  padding: 10px 20px !important;
+}
+
+@media (max-width: 767.98px) {
+  .sidebar {
+    position: static;
+    height: auto;
+    padding-top: 0;
+  }
+}
+
+.sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: 0.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.sidebar .nav-link {
+  font-weight: 500;
+  color: #333;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  margin: 0.2rem 0;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.sidebar .nav-link.active {
+  color: var(--heading-color) ;
+  background-color: rgba(36, 112, 220, 0.1);
+}
+
+.sidebar .nav-link.active i {
+  color: var(--primary-color);
+}
+
+.sidebar-heading {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+/* Avatar circle for user images */
+.avatar-circle {
+  width: 36px;
+  height: 36px;
+  background-color: #f8f9fa;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+}
+
+/* Calendar styles */
+#calendar {
+  height: 600px;
+}
+
+.fc-event {
+  cursor: pointer;
+  border: none;
+  padding: 2px 4px;
+}
+
+.fc-day-today {
+  background-color: rgba(36, 112, 220, 0.05) !important;
+}
+
+.booking-item {
+  transition: all 0.2s ease;
+}
+
+.booking-item:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Table styles */
+.table th {
+  font-weight: 600;
+  background-color: #f8f9fa;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+/* Status badges */
+.badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+}
+
+/* Card styles */
+.card {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  background-color: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 1rem;
+}
+
+.card-title {
+  margin-bottom: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  .btn-toolbar {
+    margin-top: 1rem;
+    justify-content: flex-start !important;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Dropdown menu styles */
+.dropdown-menu {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border: none;
+  padding: 0.5rem 0;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(36, 112, 220, 0.1);
+}
+
+/* Button styles */
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* Form control focus */
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(36, 112, 220, 0.25);
+}
