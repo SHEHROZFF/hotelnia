@@ -97,12 +97,12 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                                     </div>
                                 <?php else: ?>
                                     <a class="brdr-lft-mnu-link btn-white" href="Login.php"> <i
-                                            class="fa-solid fa-right-to-bracket"></i> Login</a>
+                                        class="fa-solid fa-right-to-bracket"></i> Login</a>
 
 
-                                    <a class="brdr-lft-mnu-link btn-primary" href="register.php"> <i
-                                            class="fa-solid fa-user"></i>
-                                        Register</a>
+                                <a class="brdr-lft-mnu-link btn-primary" href="register.php"> <i
+                                        class="fa-solid fa-user"></i>
+                                    Register</a>
                                 <?php endif; ?>
                             </div>
 
