@@ -4,7 +4,8 @@ require_once "classes/Hotel.php";
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: Login.php");
+    $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
+    header("Location: login.php");
     exit;
 }
 
@@ -45,6 +46,12 @@ $statusColors = [
     'checked_in' => 'primary',
     'checked_out' => 'secondary'
 ];
+
+// Add debug output
+if (isset($_SESSION['error'])) {
+    echo '<div class="alert alert-danger">' . htmlspecialchars($_SESSION['error']) . '</div>';
+    unset($_SESSION['error']);
+}
 ?>
 
 <!-- My Bookings Section -->
@@ -53,7 +60,7 @@ $statusColors = [
 
     <?php if (empty($bookings)): ?>
     <div class="alert alert-info">
-        <p class="mb-0">You don't have any bookings yet. <a href="Hotels.php">Browse our hotels</a> to make your first booking!</p>
+        <p class="mb-0">You don't have any bookings yet. <a href="hotels.php">Browse our hotels</a> to make your first booking!</p>
     </div>
     <?php else: ?>
     
@@ -96,14 +103,21 @@ $statusColors = [
                         <!-- Actions -->
                         <div class="col-md-3">
                             <div class="d-grid gap-2">
-                                <a href="booking-details.php?id=<?php echo $booking['booking_id']; ?>" 
-                                   class="btn btn-primary">View Details</a>
+                                <?php 
+                                    $bookingId = (int)$booking['booking_id'];
+                                    $detailsUrl = "booking-details.php?id=" . $bookingId;
+                                ?>
+                                <a href="<?php echo htmlspecialchars($detailsUrl); ?>" 
+                                   class="btn btn-primary"
+                                   onclick="console.log('Clicking view details for booking <?php echo $bookingId; ?>');">
+                                    View Details
+                                </a>
                                    
                                 <?php if ($booking['status'] === 'pending' || $booking['status'] === 'confirmed'): ?>
                                     <?php if (strtotime($booking['check_in_date']) > time()): ?>
                                         <button type="button" 
                                                 class="btn btn-outline-danger"
-                                                onclick="cancelBooking(<?php echo $booking['booking_id']; ?>)">
+                                                onclick="cancelBooking(<?php echo $bookingId; ?>)">
                                             Cancel Booking
                                         </button>
                                     <?php endif; ?>
@@ -176,6 +190,14 @@ document.getElementById('confirmCancelBtn').addEventListener('click', function()
         bookingToCancel = null;
     });
 });
+
+function validateBookingLink(link, bookingId) {
+    if (!bookingId) {
+        alert('Invalid booking ID');
+        return false;
+    }
+    return true;
+}
 </script>
 
 <style>

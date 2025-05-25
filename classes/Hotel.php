@@ -376,5 +376,47 @@ class Hotel {
     public function getFeaturedHotels($limit = 6) {
         return $this->getAllHotels($limit, 1, true);
     }
+    
+    public function checkRoomAvailability($roomId, $checkInDate, $checkOutDate) {
+        try {
+            $conn = $this->db->getConnection();
+            
+            // First check if room exists and is marked as available
+            $stmt = $conn->prepare("SELECT is_available FROM rooms WHERE room_id = ?");
+            $stmt->execute([$roomId]);
+            $room = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$room || !$room['is_available']) {
+                return false;
+            }
+            
+            // Then check for any overlapping bookings
+            $stmt = $conn->prepare("
+                SELECT COUNT(*) as booked 
+                FROM bookings 
+                WHERE product_id = ? 
+                AND status != 'cancelled'
+                AND (
+                    (check_in_date < ? AND check_out_date > ?)
+                    OR (check_in_date >= ? AND check_in_date < ?)
+                )
+            ");
+            
+            $stmt->execute([
+                $roomId,
+                $checkOutDate,
+                $checkInDate,
+                $checkInDate,
+                $checkOutDate
+            ]);
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result['booked'] == 0;
+            
+        } catch (Exception $e) {
+            error_log("Error checking room availability: " . $e->getMessage());
+            return false;
+        }
+    }
 }
 ?> 

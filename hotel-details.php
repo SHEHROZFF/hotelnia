@@ -129,7 +129,16 @@ foreach ($hotelImages as $image) {
                     </div>
                     <div class="card-body">
                         <?php if (count($rooms) > 0): ?>
+                            <?php 
+                            // Get current date and tomorrow's date for availability check
+                            $today = date('Y-m-d');
+                            $tomorrow = date('Y-m-d', strtotime('+1 day'));
+                            ?>
                             <?php foreach ($rooms as $room): ?>
+                            <?php 
+                            // Check real-time availability
+                            $isAvailable = $hotelObj->checkRoomAvailability($room['room_id'], $today, $tomorrow);
+                            ?>
                             <div class="room-item mb-4 p-3 border rounded">
                                 <div class="row">
                                     <div class="col-md-4">
@@ -140,7 +149,12 @@ foreach ($hotelImages as $image) {
                                         <?php endif; ?>
                                     </div>
                                     <div class="col-md-8">
-                                        <h5><?php echo htmlspecialchars($room['room_type']); ?></h5>
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <h5><?php echo htmlspecialchars($room['room_type']); ?></h5>
+                                            <span class="badge <?php echo $isAvailable ? 'bg-success' : 'bg-danger'; ?>">
+                                                <?php echo $isAvailable ? 'Available' : 'Not Available'; ?>
+                                            </span>
+                                        </div>
                                         <p><?php echo nl2br(htmlspecialchars($room['room_description'])); ?></p>
                                         <div class="room-details d-flex flex-wrap">
                                             <div class="me-3 mb-2"><i class="fas fa-users"></i> <?php echo $room['capacity']; ?> guests</div>
@@ -154,7 +168,10 @@ foreach ($hotelImages as $image) {
                                                 <span class="price-amount">$<?php echo number_format($room['price_per_night']); ?></span>
                                                 <span class="price-period">per night</span>
                                             </div>
-                                            <button type="button" class="btn btn-primary" onclick="bookRoom(<?php echo $room['room_id']; ?>, <?php echo $room['capacity']; ?>)">Book Now</button>
+                                            <button type="button" class="btn btn-primary <?php echo !$isAvailable ? 'disabled' : ''; ?>" 
+                                                    <?php echo $isAvailable ? 'onclick="bookRoom(' . $room['room_id'] . ', ' . $room['capacity'] . ')"' : 'disabled'; ?>>
+                                                <?php echo $isAvailable ? 'Book Now' : 'Not Available'; ?>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -326,6 +343,67 @@ document.addEventListener('DOMContentLoaded', function() {
             checkOut.value = nextDay.toISOString().split('T')[0];
         }
     });
+});
+
+// Add this before the closing </body> tag
+document.addEventListener('DOMContentLoaded', function() {
+    const checkInDate = document.getElementById('check_in_date');
+    const checkOutDate = document.getElementById('check_out_date');
+    const roomSelect = document.getElementById('product_id');
+    const submitButton = document.querySelector('button[type="submit"]');
+    
+    // Set minimum dates
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    checkInDate.min = today.toISOString().split('T')[0];
+    
+    // Update check-out minimum date when check-in is selected
+    checkInDate.addEventListener('change', function() {
+        const selectedDate = new Date(this.value);
+        const nextDay = new Date(selectedDate);
+        nextDay.setDate(nextDay.getDate() + 1);
+        checkOutDate.min = nextDay.toISOString().split('T')[0];
+        checkOutDate.value = ''; // Reset checkout date
+        checkAvailability();
+    });
+    
+    // Check availability when checkout date changes
+    checkOutDate.addEventListener('change', checkAvailability);
+    roomSelect.addEventListener('change', checkAvailability);
+    
+    function checkAvailability() {
+        const roomId = roomSelect.value;
+        const checkIn = checkInDate.value;
+        const checkOut = checkOutDate.value;
+        
+        if (!roomId || !checkIn || !checkOut) {
+            return;
+        }
+        
+        // Make AJAX call to check availability
+        fetch(`ajax/check_availability.php?room_id=${roomId}&check_in=${checkIn}&check_out=${checkOut}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.available) {
+                    submitButton.removeAttribute('disabled');
+                    submitButton.textContent = 'Check Availability';
+                    submitButton.classList.remove('btn-danger');
+                    submitButton.classList.add('btn-primary');
+                } else {
+                    submitButton.setAttribute('disabled', 'disabled');
+                    submitButton.textContent = 'Not Available for Selected Dates';
+                    submitButton.classList.remove('btn-primary');
+                    submitButton.classList.add('btn-danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error checking availability:', error);
+                submitButton.setAttribute('disabled', 'disabled');
+                submitButton.textContent = 'Error Checking Availability';
+            });
+    }
 });
 </script>
 

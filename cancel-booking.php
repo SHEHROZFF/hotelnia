@@ -1,30 +1,27 @@
 <?php
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+include "header.php";
 
-// Only start session if not already started
+// Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Set JSON header
-header('Content-Type: application/json');
-
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Please login to continue']);
+    $_SESSION['error'] = "Please login to continue.";
+    header("Location: login.php");
     exit;
 }
 
-// Get and validate the POST data
-$input = json_decode(file_get_contents('php://input'), true);
-if (!isset($input['booking_id']) || !is_numeric($input['booking_id'])) {
-    echo json_encode(['success' => false, 'message' => 'Invalid booking ID']);
+// Check if booking ID is provided
+if (!isset($_POST['booking_id']) || !is_numeric($_POST['booking_id'])) {
+    $_SESSION['error'] = "Invalid booking ID.";
+    header("Location: my-bookings.php");
     exit;
 }
 
-require_once '../dbcon/Database.php';
+require_once 'dbcon/Database.php';
+require_once 'vendor/autoload.php';
 
 try {
     $db = new Database();
@@ -35,7 +32,7 @@ try {
         SELECT * FROM bookings 
         WHERE booking_id = ? AND user_id = ? AND status != 'cancelled'
     ");
-    $stmt->execute([$input['booking_id'], $_SESSION['user_id']]);
+    $stmt->execute([$_POST['booking_id'], $_SESSION['user_id']]);
     $booking = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$booking) {
@@ -57,12 +54,10 @@ try {
             updated_at = NOW() 
         WHERE booking_id = ? AND user_id = ?
     ");
-    $stmt->execute([$input['booking_id'], $_SESSION['user_id']]);
+    $stmt->execute([$_POST['booking_id'], $_SESSION['user_id']]);
 
     // If there's a payment intent, process refund through Stripe
     if (!empty($booking['payment_intent_id'])) {
-        require_once '../vendor/autoload.php';
-        
         // Initialize Stripe with your secret key
         \Stripe\Stripe::setApiKey('sk_test_51OXlAIAZK57wNYnQQluuPOe6YHwpKCs2dZfKLaEe7Ye67OObYR3Hes3i0Vjo1yp450mlVWQ9ufvWWYYymF1mc33R00GwSCgwFi');
 
@@ -82,18 +77,16 @@ try {
     }
 
     $conn->commit();
-    echo json_encode([
-        'success' => true, 
-        'message' => 'Booking cancelled successfully'
-    ]);
+    $_SESSION['success'] = "Booking cancelled successfully.";
 
 } catch (Exception $e) {
     if (isset($conn) && $conn->inTransaction()) {
         $conn->rollBack();
     }
-    echo json_encode([
-        'success' => false, 
-        'message' => $e->getMessage()
-    ]);
+    $_SESSION['error'] = $e->getMessage();
 }
+
+// Redirect back to booking details
+header("Location: booking-details.php?id=" . $_POST['booking_id']);
+exit;
 ?> 

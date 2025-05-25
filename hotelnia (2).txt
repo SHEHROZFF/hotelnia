@@ -34,13 +34,19 @@
 |check_out_date|date|No|
 |guests|int(11)|Yes|1
 |total_price|decimal(10,2)|No|
+|payment_intent_id|varchar(255)|Yes|NULL
+|refund_id|varchar(100)|Yes|NULL
 |status|varchar(50)|Yes|pending
 |special_requests|text|Yes|NULL
 |created_at|timestamp|No|current_timestamp()
 |updated_at|timestamp|No|current_timestamp()
 == Dumping data for table bookings
 
-|1|10|1|2025-05-26|2025-06-03|1|3150.00|cancelled|sddsadsa|2025-05-25 18:21:45|2025-05-25 18:22:27
+|6|10|16|2025-05-25|2025-06-03|2|3600.00|pi_3RSjMeAZK57wNYnQ2EA7WpuJ|NULL|confirmed| |2025-05-25 23:33:35|2025-05-25 23:33:36
+|7|10|10|2025-05-25|2025-05-26|2|150.00|pi_3RSjTeAZK57wNYnQ38eUxEou|NULL|confirmed| |2025-05-25 23:40:49|2025-05-25 23:40:50
+|8|10|7|2025-05-25|2025-05-26|1|200.00|pi_3RSjixAZK57wNYnQ2vM39QQ6|NULL|confirmed| |2025-05-25 23:56:37|2025-05-25 23:56:38
+|9|10|17|2025-05-31|2025-07-12|2|27300.00|pi_3RSjpHAZK57wNYnQ3unWcZvY|NULL|cancelled| |2025-05-26 00:03:10|2025-05-26 00:03:34
+|10|10|7|2025-05-28|2025-05-29|2|200.00|pi_3RSjvXAZK57wNYnQ2KBkYSm7|NULL|cancelled| |2025-05-26 00:09:38|2025-05-26 00:09:47
 == Table structure for table hotels
 
 |------
