@@ -254,7 +254,6 @@ $totalPages = ceil($totalHotels / $perPage);
             const maxPriceDisplay = document.getElementById('maxPriceDisplay');
             const filterForm = document.getElementById('filterForm');
             const sortOptions = document.getElementById('sortOptions');
-            const applyFilterBtn = document.querySelector('button[type="submit"]');
 
             // Update max price when slider changes
             priceRange.addEventListener('input', function() {
@@ -272,26 +271,9 @@ $totalPages = ceil($totalHotels / $perPage);
                 maxPriceDisplay.textContent = this.value;
                 priceRange.value = this.value;
             });
-            
-            // DISABLE auto-submit for hotel type filters
-            const hotelTypeFilters = document.querySelectorAll('.hotel-type-filter');
-            hotelTypeFilters.forEach(filter => {
-                // Remove any existing event listeners
-                const oldFilter = filter.cloneNode(true);
-                filter.parentNode.replaceChild(oldFilter, filter);
-            });
-            
-            // DISABLE auto-submit for amenity filters
-            const amenityFilters = document.querySelectorAll('.amenity-filter');
-            amenityFilters.forEach(filter => {
-                // Remove any existing event listeners
-                const oldFilter = filter.cloneNode(true);
-                filter.parentNode.replaceChild(oldFilter, filter);
-            });
 
-            // Sort options - we'll keep this one auto-submitting
+            // Sort options handling
             sortOptions.addEventListener('change', function() {
-                // Create or update the hidden input for sort
                 let sortInput = document.querySelector('input[name="sort"]');
                 if (!sortInput) {
                     sortInput = document.createElement('input');
@@ -300,36 +282,18 @@ $totalPages = ceil($totalHotels / $perPage);
                     filterForm.appendChild(sortInput);
                 }
                 sortInput.value = this.value;
-                
-                // Submit the form
                 filterForm.submit();
             });
-            
-            // Apply Filter button event handler
-            applyFilterBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Validate the form
+
+            // Filter form submission
+            filterForm.addEventListener('submit', function(e) {
+                // Validate price range
                 if (parseInt(minPrice.value) > parseInt(maxPrice.value)) {
+                    e.preventDefault();
                     alert('Minimum price cannot be greater than maximum price');
-                    return;
+                    return false;
                 }
-                
-                // Get current URL parameters
-                const urlParams = new URLSearchParams(window.location.search);
-                const sortParam = urlParams.get('sort');
-                
-                // Ensure sort parameter is preserved
-                if (sortParam && !filterForm.querySelector('input[name="sort"]')) {
-                    const sortInput = document.createElement('input');
-                    sortInput.type = 'hidden';
-                    sortInput.name = 'sort';
-                    sortInput.value = sortParam;
-                    filterForm.appendChild(sortInput);
-                }
-                
-                // Submit the form
-                filterForm.submit();
+                return true;
             });
         });
     </script>

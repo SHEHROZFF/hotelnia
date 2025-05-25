@@ -2,144 +2,239 @@
 include_once('../../../global.php');?>
 <?php include_once "../../header.php" ?>
 
-
-
 <!-- Main content -->
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-    <div
-        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Booking Calendar</h1>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group me-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary" id="prevBtn">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-                <button type="button" class="btn btn-primary btn-outline-secondary" id="nextBtn">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-            </div>
-            <button type="button" class="btn btn-sm btn-outline-secondary" id="todayBtn">
-                Today
-            </button>
-            <div class="dropdown ms-2">
-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="viewDropdown"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    Month
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="viewDropdown">
-                    <li><a class="dropdown-item" href="#" data-view="dayGridMonth">Month</a></li>
-                    <li><a class="dropdown-item" href="#" data-view="timeGridWeek">Week</a></li>
-                    <li><a class="dropdown-item" href="#" data-view="timeGridDay">Day</a></li>
-                </ul>
-            </div>
-        </div>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Calendar Management</h1>
     </div>
 
-    <div class="row g-4">
-        <div class="col-lg-9">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Booking Calendar</h5>
-                    <h6 class="card-subtitle text-muted">View and manage all bookings</h6>
-                </div>
-                <div class="card-body">
-                    <div id="calendar"></div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">Booking Calendar</h5>
+            <h6 class="card-subtitle text-muted">View and manage bookings in calendar view</h6>
         </div>
-        <div class="col-lg-3">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title" id="selectedDate">April 12, 2025</h5>
-                    <h6 class="card-subtitle text-muted"><span id="bookingCount">2</span> bookings for this date
-                    </h6>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <select class="form-select" id="hotelFilter">
+                        <option value="">All Hotels</option>
+                        <!-- Hotels will be loaded dynamically -->
+                    </select>
                 </div>
-                <div class="card-body">
-                    <div id="dayBookings">
-                        <div class="booking-item border rounded p-3 mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="fw-medium">John Doe</span>
-                                <span class="badge bg-success">confirmed</span>
-                            </div>
-                            <div class="text-muted small">Deluxe Room</div>
-                            <div class="small">Apr 15 - Apr 18, 2025</div>
-                        </div>
-                        <div class="booking-item border rounded p-3 mb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="fw-medium">Sarah Davis</span>
-                                <span class="badge bg-success">confirmed</span>
-                            </div>
-                            <div class="text-muted small">Suite</div>
-                            <div class="small">Apr 12 - Apr 17, 2025</div>
-                        </div>
-                    </div>
+                <div class="col-md-4">
+                    <select class="form-select" id="roomFilter" disabled>
+                        <option value="">All Rooms</option>
+                        <!-- Rooms will be loaded based on hotel selection -->
+                    </select>
                 </div>
-                <div class="card-footer">
-                    <button class="btn btn-primary w-100">Add New Booking</button>
+                <div class="col-md-4">
+                    <select class="form-select" id="viewType">
+                        <option value="month">Month View</option>
+                        <option value="week">Week View</option>
+                        <option value="day">Day View</option>
+                    </select>
                 </div>
             </div>
+
+            <div id="calendar"></div>
         </div>
     </div>
 </main>
 
+<!-- Event Details Modal -->
+<div class="modal fade" id="eventModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Booking Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Guest</label>
+                    <div id="eventGuest" class="form-control-plaintext"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Hotel & Room</label>
+                    <div id="eventRoom" class="form-control-plaintext"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Check In/Out</label>
+                    <div id="eventDates" class="form-control-plaintext"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <div id="eventStatus"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Special Requests</label>
+                    <div id="eventRequests" class="form-control-plaintext"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="editBooking">Edit Booking</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php include_once "../../footer.php" ?>
+
+<!-- Include FullCalendar library -->
+<link href='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/main.min.css' rel='stylesheet' />
+<link href='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.10/main.min.css' rel='stylesheet' />
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.10/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.10/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@6.1.10/main.min.js'></script>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const calendarEl = document.getElementById('calendar');
-    const calendar = new FullCalendar.Calendar(calendarEl, {
+$(document).ready(function() {
+    var calendar;
+    var currentBookingId;
+
+    // Initialize calendar
+    var calendarEl = document.getElementById('calendar');
+    calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        headerToolbar: false,
-        events: [{
-                title: 'John Doe - Deluxe',
-                start: '2025-04-15',
-                end: '2025-04-18',
-                color: '#198754'
-            },
-            {
-                title: 'Sarah Davis - Suite',
-                start: '2025-04-12',
-                end: '2025-04-17',
-                color: '#198754'
-            },
-            {
-                title: 'Robert Kim - Standard',
-                start: '2025-04-20',
-                end: '2025-04-22',
-                color: '#ffc107'
-            },
-            {
-                title: 'Emily Johnson - Family',
-                start: '2025-04-25',
-                end: '2025-04-29',
-                color: '#198754'
-            }
-        ],
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: function(info, successCallback, failureCallback) {
+            $.ajax({
+                url: '../../ajax/calendar/get_events.php',
+                type: 'GET',
+                data: {
+                    start: info.startStr,
+                    end: info.endStr,
+                    hotel_id: $('#hotelFilter').val(),
+                    room_id: $('#roomFilter').val()
+                },
+                success: function(response) {
+                    if(response.success) {
+                        var events = response.data.map(function(booking) {
+                            const statusColors = {
+                                'pending': '#ffc107',
+                                'confirmed': '#198754',
+                                'checked_in': '#0dcaf0',
+                                'checked_out': '#6c757d',
+                                'cancelled': '#dc3545'
+                            };
+                            
+                            return {
+                                id: booking.booking_id,
+                                title: `${booking.guest_name} - ${booking.room_type}`,
+                                start: booking.check_in_date,
+                                end: booking.check_out_date,
+                                backgroundColor: statusColors[booking.status] || '#6c757d',
+                                extendedProps: booking
+                            };
+                        });
+                        successCallback(events);
+                    } else {
+                        failureCallback(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    failureCallback(error);
+                }
+            });
+        },
         eventClick: function(info) {
-            alert('Booking: ' + info.event.title);
+            const booking = info.event.extendedProps;
+            currentBookingId = booking.booking_id;
+            
+            $('#eventGuest').text(booking.guest_name + ' (' + booking.guest_email + ')');
+            $('#eventRoom').text(booking.hotel_name + ' - ' + booking.room_type);
+            $('#eventDates').text(
+                new Date(booking.check_in_date).toLocaleDateString() + ' to ' + 
+                new Date(booking.check_out_date).toLocaleDateString()
+            );
+            $('#eventStatus').html(`<span class="badge bg-${getStatusClass(booking.status)}">${booking.status}</span>`);
+            $('#eventRequests').text(booking.special_requests || 'No special requests');
+            
+            $('#eventModal').modal('show');
         }
     });
     calendar.render();
 
-    // Button handlers
-    document.getElementById('prevBtn').addEventListener('click', function() {
-        calendar.prev();
-    });
-
-    document.getElementById('nextBtn').addEventListener('click', function() {
-        calendar.next();
-    });
-
-    document.getElementById('todayBtn').addEventListener('click', function() {
-        calendar.today();
-    });
-
-    // View dropdown handlers
-    document.querySelectorAll('[data-view]').forEach(item => {
-        item.addEventListener('click', event => {
-            const view = event.target.getAttribute('data-view');
-            calendar.changeView(view);
-            document.getElementById('viewDropdown').textContent = event.target.textContent;
+    // Load hotels for filter
+    function loadHotels() {
+        $.ajax({
+            url: '../../ajax/hotels/get_hotels.php',
+            type: 'GET',
+            success: function(response) {
+                if(response.data) {
+                    var hotels = response.data;
+                    var options = '<option value="">All Hotels</option>';
+                    hotels.forEach(function(hotel) {
+                        options += `<option value="${hotel.hotel_id}">${hotel.hotel_name}</option>`;
+                    });
+                    $('#hotelFilter').html(options);
+                }
+            }
         });
+    }
+
+    // Load rooms when hotel is selected
+    $('#hotelFilter').change(function() {
+        var hotelId = $(this).val();
+        if(hotelId) {
+            $.ajax({
+                url: '../../ajax/rooms/get_rooms.php',
+                type: 'GET',
+                data: { hotel_id: hotelId },
+                success: function(response) {
+                    if(response.data) {
+                        var rooms = response.data;
+                        var options = '<option value="">All Rooms</option>';
+                        rooms.forEach(function(room) {
+                            options += `<option value="${room.room_id}">${room.room_type}</option>`;
+                        });
+                        $('#roomFilter')
+                            .html(options)
+                            .prop('disabled', false);
+                    }
+                }
+            });
+        } else {
+            $('#roomFilter')
+                .html('<option value="">All Rooms</option>')
+                .prop('disabled', true);
+        }
+        calendar.refetchEvents();
     });
+
+    // Refresh calendar when room filter changes
+    $('#roomFilter').change(function() {
+        calendar.refetchEvents();
+    });
+
+    // Change calendar view
+    $('#viewType').change(function() {
+        calendar.changeView($(this).val());
+    });
+
+    // Edit booking button click
+    $('#editBooking').click(function() {
+        window.location.href = '../bookings/bookings.php?edit=' + currentBookingId;
+    });
+
+    // Helper function for status badge colors
+    function getStatusClass(status) {
+        const statusClasses = {
+            'pending': 'warning',
+            'confirmed': 'success',
+            'checked_in': 'info',
+            'checked_out': 'secondary',
+            'cancelled': 'danger'
+        };
+        return statusClasses[status] || 'secondary';
+    }
+
+    // Initial load
+    loadHotels();
 });
 </script>
-<?php include_once "../../footer.php" ?>

@@ -154,7 +154,7 @@ foreach ($hotelImages as $image) {
                                                 <span class="price-amount">$<?php echo number_format($room['price_per_night']); ?></span>
                                                 <span class="price-period">per night</span>
                                             </div>
-                                            <a href="booking.php?room_id=<?php echo $room['room_id']; ?>" class="btn btn-primary">Book Now</a>
+                                            <button type="button" class="btn btn-primary" onclick="bookRoom(<?php echo $room['room_id']; ?>, <?php echo $room['capacity']; ?>)">Book Now</button>
                                         </div>
                                     </div>
                                 </div>
@@ -178,57 +178,40 @@ foreach ($hotelImages as $image) {
                         <h4 class="mb-0">Book Your Stay</h4>
                     </div>
                     <div class="card-body">
-                        <form action="booking.php" method="GET">
-                            <input type="hidden" name="hotel_id" value="<?php echo $hotel['hotel_id']; ?>">
+                        <form method="GET" action="booking.php">
+                            <input type="hidden" name="hotel_id" value="<?php echo $hotelId; ?>">
                             
                             <div class="mb-3">
-                                <label for="check_in" class="form-label">Check-in Date</label>
-                                <input type="date" class="form-control" id="check_in" name="check_in" required min="<?php echo date('Y-m-d'); ?>">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="check_out" class="form-label">Check-out Date</label>
-                                <input type="date" class="form-control" id="check_out" name="check_out" required min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="guests" class="form-label">Number of Guests</label>
-                                <select class="form-select" id="guests" name="guests" required>
-                                    <?php for ($i = 1; $i <= 5; $i++): ?>
-                                    <option value="<?php echo $i; ?>"><?php echo $i; ?> guest<?php echo $i > 1 ? 's' : ''; ?></option>
-                                    <?php endfor; ?>
-                                </select>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="room_type" class="form-label">Room Type</label>
-                                <select class="form-select" id="room_type" name="room_id" required>
-                                    <option value="">Select a room</option>
+                                <label for="product_id" class="form-label">Select Room</label>
+                                <select class="form-select" id="product_id" name="product_id" required onchange="updateGuestOptions()">
+                                    <option value="">Choose a room...</option>
                                     <?php foreach ($rooms as $room): ?>
-                                    <option value="<?php echo $room['room_id']; ?>" data-price="<?php echo $room['price_per_night']; ?>">
-                                        <?php echo htmlspecialchars($room['room_type']); ?> - $<?php echo number_format($room['price_per_night']); ?>
+                                    <option value="<?php echo $room['room_id']; ?>" data-capacity="<?php echo $room['capacity']; ?>">
+                                        <?php echo htmlspecialchars($room['room_type']); ?> - $<?php echo number_format($room['price_per_night']); ?>/night
                                     </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
                             
-                            <div class="price-summary mb-3">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Room Rate:</span>
-                                    <span id="room_rate">$0</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Number of Nights:</span>
-                                    <span id="nights_count">0</span>
-                                </div>
-                                <hr>
-                                <div class="d-flex justify-content-between fw-bold">
-                                    <span>Total:</span>
-                                    <span id="total_price">$0</span>
-                                </div>
+                            <div class="mb-3">
+                                <label for="check_in_date" class="form-label">Check-in Date</label>
+                                <input type="date" class="form-control" id="check_in_date" name="check_in_date" required 
+                                       min="<?php echo date('Y-m-d'); ?>">
                             </div>
                             
-                            <button type="submit" class="btn btn-primary w-100">Book Now</button>
+                            <div class="mb-3">
+                                <label for="check_out_date" class="form-label">Check-out Date</label>
+                                <input type="date" class="form-control" id="check_out_date" name="check_out_date" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="guests" class="form-label">Number of Guests</label>
+                                <select class="form-select" id="guests" name="guests" required>
+                                    <option value="">Select number of guests</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100">Check Availability</button>
                         </form>
                     </div>
                 </div>
@@ -274,62 +257,76 @@ foreach ($hotelImages as $image) {
     </div>
 </section>
 
-<!-- JavaScript for Booking Form -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Elements
-        const checkInDate = document.getElementById('check_in');
-        const checkOutDate = document.getElementById('check_out');
-        const roomTypeSelect = document.getElementById('room_type');
-        const roomRateDisplay = document.getElementById('room_rate');
-        const nightsCountDisplay = document.getElementById('nights_count');
-        const totalPriceDisplay = document.getElementById('total_price');
-        
-        // Function to calculate price
-        function calculatePrice() {
-            const selectedOption = roomTypeSelect.options[roomTypeSelect.selectedIndex];
-            
-            if (!selectedOption || selectedOption.value === '') {
-                roomRateDisplay.textContent = '$0';
-                nightsCountDisplay.textContent = '0';
-                totalPriceDisplay.textContent = '$0';
-                return;
-            }
-            
-            const roomPrice = parseFloat(selectedOption.dataset.price);
-            const checkIn = new Date(checkInDate.value);
-            const checkOut = new Date(checkOutDate.value);
-            
-            if (isNaN(checkIn.getTime()) || isNaN(checkOut.getTime())) {
-                nightsCountDisplay.textContent = '0';
-                totalPriceDisplay.textContent = '$' + roomPrice.toFixed(2);
-                return;
-            }
-            
-            // Calculate number of nights
-            const timeDiff = checkOut.getTime() - checkIn.getTime();
-            const nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
-            
-            if (nights <= 0) {
-                nightsCountDisplay.textContent = '0';
-                totalPriceDisplay.textContent = '$0';
-                return;
-            }
-            
-            // Update displays
-            roomRateDisplay.textContent = '$' + roomPrice.toFixed(2);
-            nightsCountDisplay.textContent = nights;
-            totalPriceDisplay.textContent = '$' + (roomPrice * nights).toFixed(2);
+// Book room function for "Book Now" buttons
+function bookRoom(roomId, capacity) {
+    // Set the room in the booking form
+    const roomSelect = document.getElementById('product_id');
+    roomSelect.value = roomId;
+    
+    // Update guest options
+    updateGuestOptions();
+    
+    // Scroll to booking form
+    const bookingCard = document.querySelector('.booking-card');
+    bookingCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    // Add a highlight effect
+    bookingCard.style.boxShadow = '0 0 20px rgba(0, 123, 255, 0.3)';
+    setTimeout(() => {
+        bookingCard.style.boxShadow = '';
+    }, 2000);
+}
+
+// Update guest options based on selected room capacity
+function updateGuestOptions() {
+    const roomSelect = document.getElementById('product_id');
+    const guestSelect = document.getElementById('guests');
+    const selectedRoom = roomSelect.options[roomSelect.selectedIndex];
+    
+    // Clear existing options
+    guestSelect.innerHTML = '<option value="">Select number of guests</option>';
+    
+    if (selectedRoom && selectedRoom.value) {
+        const capacity = parseInt(selectedRoom.dataset.capacity);
+        for (let i = 1; i <= capacity; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i + (i === 1 ? ' Guest' : ' Guests');
+            guestSelect.appendChild(option);
         }
+    }
+}
+
+// Set minimum dates for check-in and check-out
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    
+    const checkIn = document.getElementById('check_in_date');
+    const checkOut = document.getElementById('check_out_date');
+    
+    // Set minimum dates
+    checkIn.min = today;
+    checkOut.min = tomorrowStr;
+    
+    // Set default values
+    if (!checkIn.value) checkIn.value = today;
+    if (!checkOut.value) checkOut.value = tomorrowStr;
+    
+    // Update check-out min date when check-in changes
+    checkIn.addEventListener('change', function() {
+        const nextDay = new Date(this.value);
+        nextDay.setDate(nextDay.getDate() + 1);
+        checkOut.min = nextDay.toISOString().split('T')[0];
         
-        // Add event listeners
-        checkInDate.addEventListener('change', calculatePrice);
-        checkOutDate.addEventListener('change', calculatePrice);
-        roomTypeSelect.addEventListener('change', calculatePrice);
-        
-        // Initialize
-        calculatePrice();
+        if (new Date(checkOut.value) <= new Date(this.value)) {
+            checkOut.value = nextDay.toISOString().split('T')[0];
+        }
     });
+});
 </script>
 
 <!-- Add lightbox for gallery -->

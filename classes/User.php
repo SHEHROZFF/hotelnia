@@ -174,6 +174,7 @@ class User {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['user_email'] = $user['email'];
+            $_SESSION['user_role'] = $user['role']; // Add role to session
             
             // Set remember me cookie if requested
             if ($remember) {
@@ -187,10 +188,10 @@ class User {
                 $stmt->execute();
                 
                 // Set cookie with secure and httpOnly flags
-                $path = '/'; // Cookie available across entire domain
-                $domain = ''; // Current domain only
-                $secure = isset($_SERVER['HTTPS']); // True if using HTTPS
-                $httpOnly = true; // Prevent JavaScript access
+                $path = '/';
+                $domain = '';
+                $secure = isset($_SERVER['HTTPS']);
+                $httpOnly = true;
                 
                 setcookie('remember_token', $token, [
                     'expires' => $expires,
@@ -198,7 +199,7 @@ class User {
                     'domain' => $domain,
                     'secure' => $secure,
                     'httponly' => $httpOnly,
-                    'samesite' => 'Lax' // Provides some CSRF protection
+                    'samesite' => 'Lax'
                 ]);
                 
                 setcookie('user_id', $user['id'], [
@@ -207,14 +208,15 @@ class User {
                     'domain' => $domain,
                     'secure' => $secure,
                     'httponly' => $httpOnly,
-                    'samesite' => 'Lax' // Provides some CSRF protection
+                    'samesite' => 'Lax'
                 ]);
             }
             
             return [
                 'success' => true,
                 'message' => 'Login successful',
-                'user' => $user
+                'user' => $user,
+                'role' => $user['role'] // Add role to response
             ];
         } else {
             return [

@@ -89,10 +89,10 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                                             <i class="fa-solid fa-user"></i> <?= htmlspecialchars($userName) ?>
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="userDropdown">
-                                            <li><a class="dropdown-item" href="profile.php">My Profile</a></li>
-                                            <li><a class="dropdown-item" href="my-bookings.php">My Bookings</a></li>
+                                            <li><a class="dropdown-item" href="my-bookings.php"><i class="fas fa-calendar-alt"></i> My Bookings</a></li>
+                                            <li><a class="dropdown-item" href="profile.php"><i class="fas fa-user-circle"></i> My Profile</a></li>
                                             <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item" href="ajax/process_logout.php">Logout</a></li>
+                                            <li><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                                         </ul>
                                     </div>
                                 <?php else: ?>

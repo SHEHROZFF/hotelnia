@@ -1,0 +1,234 @@
+===Database hotelnia
+
+== Table structure for table amenities
+
+|------
+|Column|Type|Null|Default
+|------
+|//**amenity_id**//|int(11)|No|
+|amenity_name|varchar(100)|No|
+|amenity_icon|varchar(100)|Yes|NULL
+|amenity_description|varchar(255)|Yes|NULL
+|created_at|timestamp|No|current_timestamp()
+== Dumping data for table amenities
+
+|1|Free WiFi|fa-wifi|Free high-speed WiFi throughout the property|2025-05-25 18:21:07
+|2|Swimming Pool|fa-swimming-pool|Outdoor swimming pool|2025-05-25 18:21:07
+|3|Fitness Center|fa-dumbbell|Fully equipped fitness center|2025-05-25 18:21:07
+|4|Restaurant|fa-utensils|On-site restaurant|2025-05-25 18:21:07
+|5|Bar|fa-glass-martini-alt|Stylish bar with variety of drinks|2025-05-25 18:21:07
+|6|Parking|fa-parking|Free parking on premises|2025-05-25 18:21:07
+|7|Room Service|fa-concierge-bell|24/7 room service|2025-05-25 18:21:07
+|8|Spa|fa-spa|Full-service spa|2025-05-25 18:21:07
+|9|Air Conditioning|fa-snowflake|Climate control in all rooms|2025-05-25 18:21:07
+|10|Pet Friendly|fa-paw|Pets allowed on request|2025-05-25 18:21:07
+== Table structure for table bookings
+
+|------
+|Column|Type|Null|Default
+|------
+|//**booking_id**//|int(11)|No|
+|user_id|int(11)|No|
+|product_id|int(11)|No|
+|check_in_date|date|No|
+|check_out_date|date|No|
+|guests|int(11)|Yes|1
+|total_price|decimal(10,2)|No|
+|status|varchar(50)|Yes|pending
+|special_requests|text|Yes|NULL
+|created_at|timestamp|No|current_timestamp()
+|updated_at|timestamp|No|current_timestamp()
+== Dumping data for table bookings
+
+|1|10|1|2025-05-26|2025-06-03|1|3150.00|cancelled|sddsadsa|2025-05-25 18:21:45|2025-05-25 18:22:27
+== Table structure for table hotels
+
+|------
+|Column|Type|Null|Default
+|------
+|//**hotel_id**//|int(11)|No|
+|hotel_name|varchar(100)|No|
+|hotel_description|text|Yes|NULL
+|hotel_address|varchar(255)|No|
+|city|varchar(100)|No|
+|country|varchar(100)|No|
+|star_rating|int(11)|Yes|3
+|price_range_start|decimal(10,2)|Yes|0.00
+|price_range_end|decimal(10,2)|Yes|0.00
+|hotel_type|varchar(50)|Yes|Hotel
+|latitude|decimal(10,8)|Yes|NULL
+|longitude|decimal(11,8)|Yes|NULL
+|is_featured|tinyint(1)|Yes|0
+|is_active|tinyint(1)|Yes|1
+|created_at|timestamp|No|current_timestamp()
+|updated_at|timestamp|No|current_timestamp()
+== Dumping data for table hotels
+
+|1|Grand Hotel Plaza|Luxury hotel in the heart of the city with stunning views and top-notch amenities.|123 Downtown St|New York|USA|5|350.00|1200.00|Hotel|NULL|NULL|1|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|2|Sunset Beach Resort|Beautiful beachfront resort with private access to pristine beaches.|456 Ocean Dr|Miami|USA|4|250.00|800.00|Resort|NULL|NULL|1|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|3|Alpine Lodge|Cozy mountain retreat with spectacular views of the Alps.|789 Mountain Rd|Zurich|Switzerland|4|200.00|600.00|Lodge|NULL|NULL|1|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|4|City Center Apartments|Modern apartments in the heart of the city, perfect for business travelers.|321 Business Ave|London|United Kingdom|3|150.00|400.00|Apartment|NULL|NULL|0|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|5|Riverside Boutique Hotel|Charming boutique hotel on the river with personalized service.|654 River Ln|Paris|France|4|280.00|900.00|Hotel|NULL|NULL|1|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|6|Desert Oasis Resort|Luxurious desert resort with private pools and spa treatments.|987 Sand Blvd|Dubai|UAE|5|400.00|1500.00|Resort|NULL|NULL|1|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+== Table structure for table hotel_amenities
+
+|------
+|Column|Type|Null|Default
+|------
+|//**hotel_id**//|int(11)|No|
+|//**amenity_id**//|int(11)|No|
+== Dumping data for table hotel_amenities
+
+|1|1
+|1|2
+|1|3
+|1|4
+|1|5
+|1|6
+|1|7
+|1|8
+|1|9
+|2|1
+|2|2
+|2|4
+|2|5
+|2|6
+|2|7
+|2|8
+|2|9
+|3|1
+|3|4
+|3|6
+|3|7
+|3|9
+|3|10
+|4|1
+|4|6
+|4|9
+|5|1
+|5|4
+|5|5
+|5|6
+|5|7
+|5|9
+|6|1
+|6|2
+|6|3
+|6|4
+|6|5
+|6|6
+|6|7
+|6|8
+|6|9
+== Table structure for table hotel_images
+
+|------
+|Column|Type|Null|Default
+|------
+|//**image_id**//|int(11)|No|
+|hotel_id|int(11)|No|
+|image_path|varchar(255)|No|
+|is_primary|tinyint(1)|Yes|0
+|sort_order|int(11)|Yes|0
+|created_at|timestamp|No|current_timestamp()
+== Dumping data for table hotel_images
+
+|1|1|assets/images/hotels/grand-plaza-1.jpg|1|1|2025-05-25 18:21:07
+|2|1|assets/images/hotels/grand-plaza-2.jpg|0|2|2025-05-25 18:21:07
+|3|1|assets/images/hotels/grand-plaza-3.jpg|0|3|2025-05-25 18:21:07
+|4|2|assets/images/hotels/sunset-beach-1.jpg|1|1|2025-05-25 18:21:07
+|5|2|assets/images/hotels/sunset-beach-2.jpg|0|2|2025-05-25 18:21:07
+|6|2|assets/images/hotels/sunset-beach-3.jpg|0|3|2025-05-25 18:21:07
+|7|3|assets/images/hotels/alpine-lodge-1.jpg|1|1|2025-05-25 18:21:07
+|8|3|assets/images/hotels/alpine-lodge-2.jpg|0|2|2025-05-25 18:21:07
+|9|3|assets/images/hotels/alpine-lodge-3.jpg|0|3|2025-05-25 18:21:07
+|10|4|assets/images/hotels/city-apartments-1.jpg|1|1|2025-05-25 18:21:07
+|11|4|assets/images/hotels/city-apartments-2.jpg|0|2|2025-05-25 18:21:07
+|12|4|assets/images/hotels/city-apartments-3.jpg|0|3|2025-05-25 18:21:07
+|13|5|assets/images/hotels/riverside-1.jpg|1|1|2025-05-25 18:21:07
+|14|5|assets/images/hotels/riverside-2.jpg|0|2|2025-05-25 18:21:07
+|15|5|assets/images/hotels/riverside-3.jpg|0|3|2025-05-25 18:21:07
+|16|6|assets/images/hotels/desert-oasis-1.jpg|1|1|2025-05-25 18:21:07
+|17|6|assets/images/hotels/desert-oasis-2.jpg|0|2|2025-05-25 18:21:07
+|18|6|assets/images/hotels/desert-oasis-3.jpg|0|3|2025-05-25 18:21:07
+== Table structure for table rooms
+
+|------
+|Column|Type|Null|Default
+|------
+|//**room_id**//|int(11)|No|
+|hotel_id|int(11)|No|
+|room_type|varchar(100)|No|
+|room_description|text|Yes|NULL
+|price_per_night|decimal(10,2)|No|
+|capacity|int(11)|Yes|2
+|bed_type|varchar(50)|Yes|Queen
+|room_size|varchar(50)|Yes|NULL
+|is_available|tinyint(1)|Yes|1
+|created_at|timestamp|No|current_timestamp()
+|updated_at|timestamp|No|current_timestamp()
+== Dumping data for table rooms
+
+|1|1|Standard Room|Comfortable room with all basic amenities.|350.00|2|Queen|30 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|2|1|Deluxe Room|Spacious room with additional amenities and city view.|550.00|2|King|40 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|3|1|Executive Suite|Luxurious suite with separate living area and stunning views.|1200.00|4|King|80 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|4|2|Garden View Room|Cozy room with garden views.|250.00|2|Queen|35 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|5|2|Ocean View Room|Beautiful room with ocean views.|450.00|2|King|40 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|6|2|Beach Front Suite|Luxury suite with direct beach access.|800.00|4|King|90 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|7|3|Standard Alpine Room|Cozy room with mountain views.|200.00|2|Twin|25 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|8|3|Deluxe Alpine Room|Spacious room with balcony and mountain views.|350.00|2|Queen|35 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|9|3|Family Suite|Large suite ideal for families with mountain views.|600.00|6|Multiple|100 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|10|4|Studio Apartment|Modern studio with kitchenette.|150.00|2|Queen|40 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|11|4|One Bedroom Apartment|Spacious apartment with separate bedroom.|250.00|2|King|60 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|12|4|Two Bedroom Apartment|Large apartment with two bedrooms, ideal for families.|400.00|4|Multiple|90 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|13|5|Classic Room|Elegant room with vintage decor.|280.00|2|Queen|30 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|14|5|River View Room|Charming room with scenic river views.|420.00|2|King|35 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|15|5|Luxury Suite|Opulent suite with river views and premium amenities.|900.00|2|King|70 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|16|6|Desert View Room|Room with stunning desert views.|400.00|2|King|45 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|17|6|Oasis Pool Room|Room with direct access to the pool.|650.00|2|King|50 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+|18|6|Royal Desert Suite|Spectacular suite with private pool and desert views.|1500.00|4|King|120 sqm|1|2025-05-25 18:21:07|2025-05-25 18:21:07
+== Table structure for table room_images
+
+|------
+|Column|Type|Null|Default
+|------
+|//**image_id**//|int(11)|No|
+|room_id|int(11)|No|
+|image_path|varchar(255)|No|
+|is_primary|tinyint(1)|Yes|0
+|sort_order|int(11)|Yes|0
+|created_at|timestamp|No|current_timestamp()
+== Dumping data for table room_images
+
+|1|1|assets/images/rooms/standard-room-1.jpg|1|1|2025-05-25 18:21:07
+|2|1|assets/images/rooms/standard-room-2.jpg|0|2|2025-05-25 18:21:07
+|3|2|assets/images/rooms/deluxe-room-1.jpg|1|1|2025-05-25 18:21:07
+|4|2|assets/images/rooms/deluxe-room-2.jpg|0|2|2025-05-25 18:21:07
+|5|3|assets/images/rooms/executive-suite-1.jpg|1|1|2025-05-25 18:21:07
+|6|3|assets/images/rooms/executive-suite-2.jpg|0|2|2025-05-25 18:21:07
+|7|4|assets/images/rooms/garden-view-1.jpg|1|1|2025-05-25 18:21:07
+|8|4|assets/images/rooms/garden-view-2.jpg|0|2|2025-05-25 18:21:07
+|9|5|assets/images/rooms/ocean-view-1.jpg|1|1|2025-05-25 18:21:07
+|10|5|assets/images/rooms/ocean-view-2.jpg|0|2|2025-05-25 18:21:07
+|11|6|assets/images/rooms/beachfront-suite-1.jpg|1|1|2025-05-25 18:21:07
+|12|6|assets/images/rooms/beachfront-suite-2.jpg|0|2|2025-05-25 18:21:07
+== Table structure for table users
+
+|------
+|Column|Type|Null|Default
+|------
+|//**id**//|int(11)|No|
+|name|varchar(100)|No|
+|**email**|varchar(100)|No|
+|password|varchar(255)|No|
+|role|enum(&#039;user&#039;, &#039;admin&#039;)|Yes|user
+|remember_token|varchar(100)|Yes|NULL
+|created_at|timestamp|No|current_timestamp()
+|updated_at|timestamp|No|current_timestamp()
+|email_verified|tinyint(1)|No|0
+|verification_token|varchar(64)|Yes|NULL
+|token_expires_at|datetime|Yes|NULL
+== Dumping data for table users
+
+|9|Admin User|admin@hotelina.com|$2y$10$6HGzVBqxof1bTsn8EZnLiuDK0k2MbEllxXqkbpPBKEPSTvAITdSje|admin|NULL|2025-05-24 16:17:53|2025-05-24 17:07:23|1|NULL|NULL
+|10|Muhammad Shehroz bilal|bilal.shehroz420@gmail.com|$2y$10$yswqYRfL8kaNMePUhwwHBe6oStk5NEPvHOeEA/yKtK.6SEfHri.lS|user|NULL|2025-05-24 22:31:07|2025-05-24 22:31:23|1|NULL|NULL

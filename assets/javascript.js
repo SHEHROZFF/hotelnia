@@ -1,4 +1,3 @@
-
 // ----------------------------Hotel Booking listing Carousel ---------------------------------------------------------
 
 var swiper = new Swiper(".mySwiper", {
@@ -97,24 +96,5 @@ document.addEventListener('DOMContentLoaded', function() {
           }, 1500);
       });
   });
-
-  // Apply filter button functionality
-  const applyFilterButton = document.querySelector('.btn-primary');
-  if (applyFilterButton) {
-      applyFilterButton.addEventListener('click', function() {
-          // Simulate loading state
-          this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Applying...';
-          this.disabled = true;
-          
-          // Simulate API call
-          setTimeout(() => {
-              this.innerHTML = 'Apply Filter';
-              this.disabled = false;
-              
-              // Show a toast notification (would require additional implementation)
-              console.log('Filters applied');
-          }, 1500);
-      });
-  }
 });
 

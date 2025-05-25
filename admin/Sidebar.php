@@ -1,41 +1,52 @@
-<nav id="sidebar" class="col  -md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+<nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
     <div class="position-sticky pt-3">
         <div class="d-flex align-items-center pb-3 mb-3 border-bottom">
             <div class="nav-logo">
-
                 <a class="logo" href="index.php"> <img style="width:200px !important;" class="w-100"
-                        src="<?php  echo $urlval?>assets/images/logo.png" alt=""></a>
+                        src="<?php echo $urlval?>assets/images/logo.png" alt=""></a>
             </div>
         </div>
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link active" href="<?php echo  $urlval?>admin/index.php">
+                <a class="nav-link active" href="<?php echo $urlval?>admin/index.php">
                     <i class="bi bi-house me-2"></i>
                     Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo  $urlval?>admin/pages/calendar/calendar.php">
+                <a class="nav-link" href="<?php echo $urlval?>admin/pages/hotels/hotels.php">
+                    <i class="bi bi-building me-2"></i>
+                    Hotels
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo $urlval?>admin/pages/calendar/calendar.php">
                     <i class="bi bi-calendar me-2"></i>
                     Calendar
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo  $urlval?>admin/pages/bookings/bookings.php">
+                <a class="nav-link" href="<?php echo $urlval?>admin/pages/bookings/bookings.php">
                     <i class="bi bi-journal-check me-2"></i>
                     Bookings
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo  $urlval?>admin/pages/rooms/rooms.php">
+                <a class="nav-link" href="<?php echo $urlval?>admin/pages/rooms/rooms.php">
                     <i class="bi bi-door-closed me-2"></i>
                     Rooms
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo  $urlval?>admin/pages/guests/guests.php">
+                <a class="nav-link" href="<?php echo $urlval?>admin/pages/guests/guests.php">
                     <i class="bi bi-people me-2"></i>
                     Guests
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo $urlval?>admin/pages/reports/reports.php">
+                    <i class="bi bi-graph-up me-2"></i>
+                    Reports
                 </a>
             </li>
         </ul>
@@ -51,7 +62,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="<?php echo $urlval; ?>admin/logout.php">
                     <i class="bi bi-box-arrow-right me-2"></i>
                     Logout
                 </a>

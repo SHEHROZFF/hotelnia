@@ -42,11 +42,17 @@ try {
                 // Clear any unexpected output from buffer before sending JSON
                 ob_clean();
                 
+                // Set redirect based on user role
+                $redirect = $urlval; // Default redirect to home
+                if (isset($result['role']) && $result['role'] === 'admin') {
+                    $redirect = $urlval . 'admin/index.php';
+                }
+                
                 // Login successful
                 echo json_encode([
                     'success' => true,
                     'message' => 'Login successful. Redirecting...',
-                    'redirect' => $urlval // Redirect to homepage
+                    'redirect' => $redirect
                 ]);
                 exit;
             } else {
